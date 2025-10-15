@@ -9,7 +9,11 @@ import studentRoutes from './routes/students.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["https://swizz-emt1.vercel.app"], // your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/eduport';
