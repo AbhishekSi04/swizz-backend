@@ -8,10 +8,10 @@
     "preview": "vite preview",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx}'",
     "dev": "vite",
-       "build": "vite build",
-       "server": "node index.js",
-       "server:dev": "nodemon index.js",
-       "start": "node index.js"
+    "build": "vite build",
+    "server": "node index.js",
+    "server:dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -9,11 +9,27 @@ import studentRoutes from './routes/students.js';
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: ["https://swizz-emt1.vercel.app"], // your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+const allowedOrigins = [
+  "https://swizz-emt1.vercel.app", // your frontend
+  "http://localhost:5173",         // for local dev (optional)
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// This helps with preflight requests
+app.options("*", cors());
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/eduport';
