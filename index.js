@@ -1,60 +1,53 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import authRoutes from "./routes/auth.js";
-import courseRoutes from "./routes/courses.js";
-import studentRoutes from "./routes/students.js";
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import authRoutes from './routes/auth.js';
+import courseRoutes from './routes/courses.js';
+import studentRoutes from './routes/students.js';
 
 dotenv.config();
 
 const app = express();
-
-// ✅ CORS Setup
-app.use(
-  cors({
-    origin: [
-      "https://swizz-emt1.vercel.app", // frontend (deployed)
-      "http://localhost:5173",         // frontend (local dev)
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
+app.use(cors({
+  origin: ["https://swizz-emt1.vercel.app"], // your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
-// ✅ Root route (so Vercel shows something)
-app.get("/", (req, res) => {
-  res.send("✅ Backend server is running successfully on Vercel 🚀");
-});
+const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/eduport';
+const port = process.env.PORT || 4000;
 
-// ✅ MongoDB Connection
-const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/eduport";
 mongoose
   .connect(mongoUri)
-  .then(() => console.log("MongoDB connected ✅"))
+  .then(() => {
+    console.log('MongoDB connected');
+  })
   .catch((err) => {
-    console.error("MongoDB connection error ❌", err);
+    console.error('MongoDB connection error', err);
     process.exit(1);
   });
 
-// ✅ API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/students", studentRoutes);
-
-// ✅ Health route
-app.get("/api/health", (_req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
 
-// ✅ Error handling
+app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/students', studentRoutes);
+
 app.use((err, _req, res, _next) => {
-  res.status(err.status || 500).json({
-    error: err.message || "Internal Server Error",
-  });
+  const status = err.status || 500;
+  res.status(status).json({ error: err.message || 'Server error' });
 });
 
-// ✅ Vercel export (IMPORTANT)
-export default app;
+app.get("/", (req, res) => {
+  res.send("Backend server is running successfully 🚀");
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+
