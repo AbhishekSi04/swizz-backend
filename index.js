@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const allowedOrigins = [
-  "https://swizz-emt1.vercel.app", // your frontend
+  "https://swizz-eight.vercel.app/", // your frontend
   "http://localhost:5173",         // for local dev (optional)
 ];
 
