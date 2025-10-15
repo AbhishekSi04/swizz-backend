@@ -42,6 +42,10 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ error: err.message || 'Server error' });
 });
 
+app.get("/", (req, res) => {
+  res.send("Backend server is running successfully 🚀");
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
