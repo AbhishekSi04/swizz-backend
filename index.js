@@ -9,22 +9,29 @@ import studentRoutes from './routes/students.js';
 dotenv.config();
 
 const app = express();
+// Use exact origins (no trailing slash) so the browser Origin header matches
 const allowedOrigins = [
-  "https://swizz-eight.vercel.app/", // your frontend
-  "http://localhost:5173",         // for local dev (optional)
+  "https://swizz-eight.vercel.app",
+  "http://localhost:5173",
 ];
+
+// Helper to normalize origin value
+const normalizeOrigin = (o) => (o || '').replace(/\/$/, '');
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      const normalized = normalizeOrigin(origin);
+      if (!origin || allowedOrigins.includes(normalized)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    optionsSuccessStatus: 204,
   })
 );
 
