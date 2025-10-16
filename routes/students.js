@@ -5,6 +5,19 @@ import Course from '../models/Course.js';
 
 const router = express.Router();
 
+// List available courses for students (published only)
+router.get('/courses', requireAuth, requireRole(['student', 'admin']), async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    const filter = { published: true };
+    if (q) filter.title = { $regex: q, $options: 'i' };
+    const courses = await Course.find(filter).sort({ createdAt: -1 }).select('-__v');
+    res.json(courses);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Enroll in a course (student)
 router.post('/enroll/:courseId', requireAuth, requireRole(['student', 'admin']), async (req, res, next) => {
   try {
