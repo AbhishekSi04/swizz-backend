@@ -13,6 +13,7 @@ const app = express();
 const allowedOrigins = [
   "https://swizz-eight.vercel.app",
   "http://localhost:5173",
+  "https://swizz-backend.onrender.com"
 ];
 
 // Helper to normalize origin value
